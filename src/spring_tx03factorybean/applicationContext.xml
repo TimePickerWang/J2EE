@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    					http://www.springframework.org/schema/beans/spring-beans.xsd
+    					http://www.springframework.org/schema/aop 
+       					http://www.springframework.org/schema/aop/spring-aop.xsd
+       					http://www.springframework.org/schema/context 
+       					http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 1.datasource -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false&amp;serverTimezone=GMT"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="1994"></property>
+	</bean>
+	
+	<!-- 2.dao -->
+	<bean id="accountDao" class="spring_tx03factorybean.AccountDaoImpl">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 3.service -->
+	<bean id="accountService" class="spring_tx03factorybean.AccountServiceImpl">
+		<property name="accountDao" ref="accountDao"></property>
+	</bean>
+	
+	<!-- 4 service 代理对象 
+			4.1 proxyInterfaces 接口 
+			4.2 target 目标类
+			4.3 transactionManager 事务管理器
+			4.4 transactionAttributes 事务属性（事务详情）
+				prop.key:确定哪些方法使用当前事务配置
+				prop.text:用于配置事务详情
+					格式：PROPAGATION,ISOLATION,readOnly,-Exception,+Exception
+						        传播行为   	    隔离级别	         是否只读	      异常回滚		  异常提交
+					例如：
+						<prop key="transfer">PROPAGATION_REQUIRED,ISOLATION_DEFAULT</prop> 默认传播行为，和隔离级别
+						<prop key="transfer">PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly</prop> 只读
+						<prop key="transfer">PROPAGATION_REQUIRED,ISOLATION_DEFAULT,+java.lang.ArithmeticException</prop> 有异常扔提交
+	-->
+	<bean id="proxyAccountService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="proxyInterfaces" value="spring_tx03factorybean.AccountService"></property>
+		<property name="target" ref="accountService"></property>
+		<property name="transactionManager" ref="txManager"></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="transfer">PROPAGATION_REQUIRED,ISOLATION_DEFAULT</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- 5 配置事务管理器 ,管理器需要事务，事务从Connection获得，连接从连接池DataSource获得 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+</beans>
