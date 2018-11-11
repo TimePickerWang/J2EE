@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="mybatis02.UserMapper">
+
+	<select id="findUserById" parameterType="int" resultType="mybatis02.User">
+		SELECT * FROM USER WHERE id =#{id}
+	</select>
+
+	<insert id="insertUser" parameterType="mybatis02.User">
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO USER(username,sex,birthday,address) VALUES (#{username},#{sex},#{birthday},#{address})
+	</insert>
+	
+	
+	<!-- resultMap入门 -->
+	<!-- id标签：专门为查询结果中唯一列映射 -->
+	<!-- result标签：映射查询结果中的普通列 -->
+	<resultMap type="mybatis02.User" id="UserRstMap">
+		<id column="id_" property="id" />
+		<result column="username_" property="username" />
+		<result column="sex_" property="sex" />
+	</resultMap>
+	
+	<select id="findUserRstMap" parameterType="int" resultMap="UserRstMap">
+		SELECT id id_,username username_,sex sex_ from user where id = #{id}
+	</select>
+	
+</mapper>
