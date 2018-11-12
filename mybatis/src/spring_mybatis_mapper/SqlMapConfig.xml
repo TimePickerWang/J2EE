@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 加载映射文件,和spring整合后，使用mapper扫描器，这里不用配置了 -->
+<!-- 	<mappers>
+		<mapper resource="spring_mybatis_mapper/UserMapper.xml"></mapper>
+	</mappers> -->
+	
+</configuration>
+
+
