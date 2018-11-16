@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.wang.dao.UserMapper">
+
+	<select id="findUserById" parameterType="int" resultType="cn.wang.model.User">
+		SELECT * FROM users WHERE id = #{id}
+	</select>
+	
+	<select id="findAllUsers" resultType="cn.wang.model.User">
+		SELECT * FROM users
+	</select>
+	
+	<delete id="deleteUserById" parameterType="int">
+		DELETE FROM users WHERE id=#{id}
+	</delete>
+	
+	<insert id="addUser" parameterType="cn.wang.model.User">
+		INSERT INTO users(name,password,email,birthday) VALUE(#{name},#{password},#{email},#{birthday})
+	</insert>
+	
+	<update id="updataUser" parameterType="cn.wang.model.User">
+		UPDATE users SET name=#{name},password=#{password},email=#{email},birthday=#{birthday} WHERE id=#{id}
+	</update>
+</mapper>
